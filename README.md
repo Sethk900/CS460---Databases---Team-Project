@@ -1,31 +1,31 @@
 # CS360_Project
 
 # Prospective Timeline:
-NLT 07 September: 
-  -Generate sample data (credit card expense dataset, sample W-2, and any other forms we want to use)
-  -Draft E-R Diagram
-  -Draft a design of the application based on the assignment specifications
-  -Begin drafting a presentation of the prepared documents (application workflow design, E-R diagram, and sample data)
-NLT 18 Septemmber:
-  -Decide on specific tools for hosting the database and web interface
-  -Decide on a host language for running scripts along with SQL (probably Python or C?)
-  -Begin drafting backend SQL queries and scripts necessary to draw from the sample data and generate a .pdf tax return output
- NLT 28 September:
-  -Finalize E-R diagram and any other documentation used for project planning (application workflow design, sample data, etc.)
-  -Prepare and finalize presentation of the documentation listed above
- NLT 05 October:
-  -Finalize sample data, stored in a normalized database
-  -Start grinding on the web interface (this will probably be the most difficult part)
-NLT 18 October:
-  -Complete a functional draft of the web interface 
-NLT 05 November:
-  -Work out any bugs or issues with the web interface, of which there will likely be many
-  -Make sure all script and query drafts are solid
-NLT 16 November:
-  -Mop up any outstanding issues
-  -Prepare and finalize a presentation of the finished product
-17 November:
-  -Deliver presentation of the finished product
+NLT 07 September:  
+  -Generate sample data (credit card expense dataset, sample W-2, and any other forms we want to use)  
+  -Draft E-R Diagram  
+  -Draft a design of the application based on the assignment specifications  
+  -Begin drafting a presentation of the prepared documents (application workflow design, E-R diagram, and sample data)  
+NLT 18 Septemmber:  
+  -Decide on specific tools for hosting the database and web interface  
+  -Decide on a host language for running scripts along with SQL (probably Python or C?)  
+  -Begin drafting backend SQL queries and scripts necessary to draw from the sample data and generate a .pdf tax return output  
+ NLT 28 September:  
+  -Finalize E-R diagram and any other documentation used for project planning (application workflow design, sample data, etc.)  
+  -Prepare and finalize presentation of the documentation listed above  
+ NLT 05 October:  
+  -Finalize sample data, stored in a normalized database  
+  -Start grinding on the web interface (this will probably be the most difficult part)  
+NLT 18 October:  
+  -Complete a functional draft of the web interface   
+NLT 05 November:  
+  -Work out any bugs or issues with the web interface, of which there will likely be many  
+  -Make sure all script and query drafts are solid  
+NLT 16 November:  
+  -Mop up any outstanding issues  
+  -Prepare and finalize a presentation of the finished product  
+17 November:  
+  -Deliver presentation of the finished product  
   
 # Assignment Description:
 The main focus of the implementation project is to learn how to use a mainstream RDBMS such as Oracle or MySQL. In this course we emphasize only on design of a database, querying using SQL and developing interfaces to a database application. Such interfaces may be in form of a web interface, natural language interface or graphical interface. Students will work in groups of two (at most three), and all students will implement one application, from a list of 2-3 projects listed below. Interim reports and demo on September 29 and November 17/18 must accompany implementation progress/evidence in the form of actual coding and demo. You will upload your project on a web server and make it functional. You will also submit all source code on a public repository such as GitHub or SourceForge for posterity and onward use by other students. Your project will be graded for functionality and its working status, and not just for coding. The user interface will be examined for usability and user experience.
