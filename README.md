@@ -51,6 +51,9 @@ Prepare the tax return using an appropriate form, showing all personal and tax d
 
 Once saved and submitted, it cannot be modified. But can be amended and resubmitted any number of times. However, all submissions are permanent and cannot be overwritten – i.e., all submitted versions are maintained.
 
-
+# Relevant Links:
+Using PHP to generate a .pdf from a MySQL database:
+https://www.plus2net.com/php_tutorial/pdf-data-student.php
+https://www.phpflow.com/php/generate-pdf-file-mysql-database-using-php/
 
 
