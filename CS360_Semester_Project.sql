@@ -105,4 +105,4 @@ set @MaxDeduction= 700 + /* Base automatic deduction */
     +(@IsHandicap*750); /*Add other deductions for home and itemized expenses */
  
  
- set @TaxableIncome=  
+ set @TaxableIncome=(select sum(Amount) from GrossTaxableIncomes where PID=@PID);
