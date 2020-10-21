@@ -1,5 +1,11 @@
 # CS360_Project
 
+# Current To-Do List
+Complete TaxesOwed query (Trinity)
+Complete MaxDeduction query (Seth)
+Implement a simple web interface to run queries on the database
+Write insert statements to add sample data to the database
+
 # Prospective Timeline:
 NLT 07 September:  
   -Generate sample data (credit card expense dataset, sample W-2, and any other forms we want to use)  
