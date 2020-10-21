@@ -106,3 +106,12 @@ set @MaxDeduction= 700 + /* Base automatic deduction */
  
  
  set @TaxableIncome=(select sum(Amount) from GrossTaxableIncomes where PID=@PID);
+ 
+ /* We will store the final tax return info for a given taxpayer in this table */
+create table TaxReturnStatement
+	(TaxPayerID				numeric(20, 0) not null,
+	AmountOwed				numeric(10, 2),
+    RefundDue				numeric(10,2),
+	primary key(TaxPayerID));
+    
+/* Update Statement to store tax return info in the TaxReturnStatement table */
