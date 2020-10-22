@@ -19,10 +19,10 @@ $search_result = null;
 
 //========== Database Connection ==========
 
-$servername = "localhost";
-$username = "root";
-$password = "<your password>";
-$dbname = "information_schema";
+$servername = "http://mytax2.kb-projects.com/phpMyAdmin/index.php";
+$username = "mytax2";
+$password = "&1E-epifQh,8";
+$dbname = "mytax2";
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
