@@ -8,6 +8,7 @@ create table TaxPayers
     State			varchar(10),
     Gender			varchar(10),
     IsElderly		varchar(3),
+    IsHandicapped	varchar(3),
     IsWoundedVet	varchar(3),
     primary key(TaxPayerID)
     );
@@ -82,7 +83,7 @@ create table RentedHome
 /* Query to determine total taxes withheld */
 set @TotalTaxesWithheld=(select sum(FederalTaxesWithheld)
 from GrossTaxableIncomes
-where PID=@PID);
+where TaxPayerID=@TaxPayerID);
 
 /* Automatic Deductions: automatic=$3000, female/senior=$500, handicap=$750, woundedvet=$2000 */
 /* To calculate this, we must sum the automatic deduction with all other possible itemized deductions */
@@ -104,9 +105,6 @@ set @MaxDeduction= 700 + /* Base automatic deduction */
     +(@IsWomanOrElderly*500) /* Woman or elderly deduction */
     +(@IsHandicap*750); /*Add other deductions for home and itemized expenses */
  
- 
- set @TaxableIncome=(select sum(Amount) from GrossTaxableIncomes where PID=@PID);
- 
  /* We will store the final tax return info for a given taxpayer in this table */
 create table TaxReturnStatement
 	(TaxPayerID				numeric(20, 0) not null,
@@ -114,4 +112,36 @@ create table TaxReturnStatement
     RefundDue				numeric(10,2),
 	primary key(TaxPayerID));
     
-/* Update Statement to store tax return info in the TaxReturnStatement table */
+set @TaxableIncome=(select sum(Amount) from GrossTaxableIncomes where TaxPayerID=@TaxPayerID);
+
+delimiter //
+create function calcTax(income numeric(10,2))
+    returns numeric(10,2) deterministic
+    begin
+        declare result numeric(10,2);
+        if income > 35000 then
+            set result = (income - 35000) * 0.3;
+            set result = result + 17000 * 0.25;
+            set result = result + 7000 * 0.2;
+            set result = result + 6000 * 0.15;
+            set result = result + 5000 * 0.1;
+        elseif income > 18000 then
+            set result = (income - 18000) * 0.25;
+            set result = result + 7000 * 0.2;
+            set result = result + 6000 * 0.15;
+            set result = result + 5000 * 0.1;
+        elseif income > 11000 then
+            set result = (income - 11000) * 0.2;
+            set result = result + 6000 * 0.15;
+            set result = result + 5000 * 0.1;
+        elseif income > 5000 then
+            set result = (income - 5000) * 0.15;
+            set result = result + 5000 * 0.1;
+        else
+            set result = income * 0.1;
+        end if;
+        return (result);
+    end //
+delimiter ;
+
+set @TotalTax = calcTax(@TaxableIncome);
