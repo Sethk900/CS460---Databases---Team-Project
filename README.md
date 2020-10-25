@@ -1,9 +1,11 @@
 # CS360_Project
 
 # Current To-Do List
-Complete TaxesOwed query (Trinity)
-Complete MaxDeduction query (Seth)
-Implement a simple web interface to run queries on the database
+Refine MaxDeduction query (Seth)
+Write update statement to generate a tax return statement using the variables we've calculated in the other queries (Seth)
+Add a button to the web interface with an onclick() function that runs the update statement and displays the output (both? Dependent on completion of update statement)
+  - Our next step will be to deliver this output in the form of a PDF, but we will cross that bridge when we get to it
+Add a picture to the web interface to make it seem like a real product (Trinity)
 Write insert statements to add sample data to the database
 
 # Prospective Timeline:
