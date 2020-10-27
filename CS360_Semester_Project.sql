@@ -200,10 +200,24 @@ select * from TaxReturnStatement
 
 
 /* Procedure we can use with a TaxPayerID to generate tax return statement */
-create procedure generateTaxReturnStatement @IDNo numeric(20,0) 
-	as
+delimiter //
+create function generateTaxReturnStatement(TID numeric(20,0))
+	returns numeric(20,0) deterministic
     begin
-		set @TaxPayerID=@IDNo;
+		set @TaxPayerID=TID;
+        set @IsWoundedVet = case /* case woundedvet='yes' then 1 case woundedvet='no' then 0 */
+			when (select IsWoundedVet from TaxPayers where TaxPayerID=@TaxPayerID) = "Yes" then 1
+			else 0
+		end;
+		set @IsWomanOrElderly = case /* same as above, but with the gender and elderly columns in TaxPayers row */
+			when (select Gender from TaxPayers where TaxPayerID=@TaxPayerID) = "Female" then "1"
+			when (select IsElderly from TaxPayers where TaxPayerID=@TaxPayerID) = "Yes" then "1"
+		else 0
+		end;
+		set @IsHandiCap = case
+			when (select IsHandicapped from TaxPayers where TaxPayerID=@TaxPayerID) = "Yes" then 1
+			else 0
+		end;
         set @MaxDeduction= 700 + /* Base automatic deduction */
 			(@IsWoundedVet*2000) /* Wounded vet deduction */
 			+(@IsWomanOrElderly*500) /* Woman or elderly deduction */
@@ -226,7 +240,13 @@ create procedure generateTaxReturnStatement @IDNo numeric(20,0)
 		end;
         update TaxReturnStatement set AmountOwed=@TaxesDue where TaxPayerID=@TaxPayerID;
 		update TaxReturnStatement set RefundDue=@RefundDue where TaxPayerID=@TaxPayerID;
-		select * from TaxReturnStatement;
+		/*select * from TaxReturnStatement;*/
+return(TID);
         /*return (result);*/
-end;
-    
+end //
+delimiter ;
+
+select * from TaxReturnStatement;
+update TaxReturnStatement set RefundDue=0 where TaxPayerID=201920392092039;
+set @test = generateTaxReturnStatement(201920392092039);
+drop function generateTaxReturnStatement;
