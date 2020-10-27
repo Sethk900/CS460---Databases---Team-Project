@@ -50,6 +50,7 @@ if ($conn->connect_error) {
        		 $field2name = $row["AmountOwed"];
       		  $field3name = $row["RefundDue"];
 			
+			$OutputString = "TaxPayerID: ".$field1name."\nTaxes Owed: $".$field2name."\nRefund Due: $".$field3name;
 			echo "TaxPayerID:", $field1name.'<br />';
 			echo "Taxes Owed: ", $field2name.'<br />';
         	echo "Refund Due: ", $field3name.'<br />';
@@ -58,6 +59,17 @@ if ($conn->connect_error) {
     		/* free result set */
    			 $result->free();
 }
+
+	ob_start();
+	require('./fpdf.php');
+
+	$pdf=new FPDF();
+	$pdf->AddPage();
+	$pdf->SetFont('Arial','B',16);
+	$pdf->Cell(40,10,$OutputString);
+	$pdf->Output();
+	ob_end_flush();
+
             //echo "This is Button1 that is selected"; 
 
         } 
