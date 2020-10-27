@@ -19,7 +19,7 @@ $search_result = null;
 
 //========== Database Connection ==========
 
-$servername = "http://mytax2.kb-projects.com/phpMyAdmin/index.php";
+$servername = "mytax2.kb-projects.com";
 $username = "mytax2";
 $password = "&1E-epifQh,8";
 $dbname = "mytax2";
