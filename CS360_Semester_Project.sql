@@ -96,6 +96,16 @@ create table RentedHome
 	primary key(TaxPayerID, Address));
  insert into RentedHome values(201920392092039, "2040 farthington ln", 09102020, 10102020);
  
+ create table HasDependent
+	(TaxPayerID			numeric(20, 0) not null,
+	DependentName		varchar(30) not null,
+    DependentSSN		numeric(9,0),
+    RelationshipType	varchar(50),
+	primary key(TaxPayerID, DependentName),
+    foreign key(TaxPayerID) references TaxPayers(TaxPayerID));
+insert into HasDependent values( 201920392092039, "Alexis Rose", 736728172, "Daughter");
+insert into HasDependent values( 201920392092039, "David Rose", 920938293, "Son");
+ 
 /* Query to determine total taxes withheld */
 set @TotalTaxesWithheld=(select sum(FederalTaxesWithheld)
 from GrossTaxableIncomes
@@ -224,7 +234,7 @@ create function generateTaxReturnStatement(TID numeric(20,0))
 			+(@IsHandicap*750) /*Handicapped deduction */
 			+((select Amount from StudentLoans where TaxPayerID=@TaxPayerID)*(select InterestRate from StudentLoans where TaxPayerID=@TaxPayerID))/100
 			+(select sum(Amount) from WorkExpenses where TaxPayerID=@TaxPayerID); /* Work Expenses are deductible */
-        set @TaxableIncome=(select sum(Amount) from GrossTaxableIncomes where TaxPayerID=@TaxPayerID)-@MaxDeduction;
+	set @TaxableIncome=(select sum(Amount) from GrossTaxableIncomes where TaxPayerID=@TaxPayerID)-@MaxDeduction;
 		set @TotalTax = calcTax(@TaxableIncome);
         set @TaxesWitheld = (select sum(FederalTaxesWithheld) from GrossTaxableIncomes where TaxPayerID=@TaxPayerID);
 		set @RefundDue = (@TotalTax-@TaxesWitheld)*-1;
@@ -250,3 +260,36 @@ select * from TaxReturnStatement;
 update TaxReturnStatement set RefundDue=0 where TaxPayerID=201920392092039;
 set @test = generateTaxReturnStatement(201920392092039);
 drop function generateTaxReturnStatement;
+
+/* This table will be the one that we ultmiately query from the web interface to read out the values that we need as input for the pdf */
+create table CompleteTaxReturnStatement
+	(TaxPayerID			numeric(20,0) not null,
+	Name 				varchar(20),
+    DOB 				numeric(8,0),
+    SSN					numeric(9,0),
+    StreetAddress		varchar(30),
+    City 				varchar(20),
+    State				varchar(10),
+    NumberOfDependents	numeric(3,0),
+    TotalIncome			numeric(10,0),
+    MaxDeduction		numeric(10,0),
+    TaxableIncome		numeric(10,0),
+    TaxesWitheld		numeric(10,0),
+    PaymentDue			numeric(10,0),
+    RefundDue			numeric(10,2));
+insert into CompleteTaxReturnStatement
+values( @TaxPayerID, @TaxPayerName, @DOB, @SSN, @Address, @City, @State, @NumberOfDependents, @TotalIncome, @MaxDeduction, @TaxableIncome, @TaxesWitheld, @TaxesDue, @RefundDue);
+
+/* a lot of the variables for that insert statement aren't initialized yet...let's do that here */
+set @TaxPayerName = (select Name from TaxPayers where TaxPayerID=@TaxPayerID);
+set @DOB = (select DOB from TaxPayers where TaxPayerID=@TaxPayerID);
+set @SSN = (select SSN from TaxPayers where TaxPayerID=@TaxPayerID);
+set @Address= (select StreetAddress from TaxPayers where TaxPayerID=@TaxPayerID);
+set @City = (select City from TaxPayers where TaxPayerID=@TaxPayerID);
+set @State = (select State from TaxPayers where TaxPayerID=@TaxPayerID);
+set @NumberOfDependents = (select count(*) from HasDependent where TaxPayerID=@TaxPayerID);
+set @TotalIncome = (select sum(Amount) from GrossTaxableIncomes where TaxPayerID=@TaxPayerID);
+/* The remaining variables can be set by calling the generateTaxReturnStatement function */
+    select * from CompleteTaxReturnStatement
+    
+    
