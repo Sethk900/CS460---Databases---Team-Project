@@ -128,12 +128,14 @@ set @IsHandiCap = case
 	else 0
 end;
 
+set @NumberOfDependents = (select count(*) from HasDependent where TaxPayerID=@TaxPayerID);
 set @MaxDeduction= 700 + /* Base automatic deduction */
 	(@IsWoundedVet*2000) /* Wounded vet deduction */
     +(@IsWomanOrElderly*500) /* Woman or elderly deduction */
     +(@IsHandicap*750) /*Handicapped deduction */
     +((select Amount from StudentLoans where TaxPayerID=@TaxPayerID)*(select InterestRate from StudentLoans where TaxPayerID=@TaxPayerID))/100
-    +(select sum(Amount) from WorkExpenses where TaxPayerID=@TaxPayerID); /* Work Expenses are deductible */
+    +(select sum(Amount) from WorkExpenses where TaxPayerID=@TaxPayerID) /* Work Expenses are deductible */
+    +(@NumberOfDependents*2000);
 
  /* We will store the final tax return info for a given taxpayer in this table */
 create table TaxReturnStatement
@@ -228,12 +230,15 @@ create function generateTaxReturnStatement(TID numeric(20,0))
 			when (select IsHandicapped from TaxPayers where TaxPayerID=@TaxPayerID) = "Yes" then 1
 			else 0
 		end;
+        set @NumberOfDependents = (select count(*) from HasDependent where TaxPayerID=@TaxPayerID);
         set @MaxDeduction= 700 + /* Base automatic deduction */
 			(@IsWoundedVet*2000) /* Wounded vet deduction */
 			+(@IsWomanOrElderly*500) /* Woman or elderly deduction */
 			+(@IsHandicap*750) /*Handicapped deduction */
 			+((select Amount from StudentLoans where TaxPayerID=@TaxPayerID)*(select InterestRate from StudentLoans where TaxPayerID=@TaxPayerID))/100
-			+(select sum(Amount) from WorkExpenses where TaxPayerID=@TaxPayerID); /* Work Expenses are deductible */
+			+(select sum(Amount) from WorkExpenses where TaxPayerID=@TaxPayerID) /* Work Expenses are deductible */
+            +(@NumberOfDependents*2000);
+           
 	set @TaxableIncome=(select sum(Amount) from GrossTaxableIncomes where TaxPayerID=@TaxPayerID)-@MaxDeduction;
 		set @TotalTax = calcTax(@TaxableIncome);
         set @TaxesWitheld = (select sum(FederalTaxesWithheld) from GrossTaxableIncomes where TaxPayerID=@TaxPayerID);
@@ -242,24 +247,24 @@ create function generateTaxReturnStatement(TID numeric(20,0))
 			case when @RefundDue < 0 then 0
 			else @RefundDue
 		end;
-		
 		set @TaxesDue = @TotalTax - @TaxesWitheld;
 		set @TaxesDue = case
 			when @TaxesDue < 0 then 0
 			else @TaxesDue
 		end;
+        select @TaxableIncome, @MaxDeduction, @TotalTax, @TaxesDue, @RefundDue;
         update TaxReturnStatement set AmountOwed=@TaxesDue where TaxPayerID=@TaxPayerID;
 		update TaxReturnStatement set RefundDue=@RefundDue where TaxPayerID=@TaxPayerID;
-		/*select * from TaxReturnStatement;*/
+		select * from TaxReturnStatement;
 return(TID);
         /*return (result);*/
 end //
 delimiter ;
 
-select * from TaxReturnStatement;
+select @NumberOfDependents;
 update TaxReturnStatement set RefundDue=0 where TaxPayerID=201920392092039;
 set @test = generateTaxReturnStatement(201920392092039);
-drop function generateTaxReturnStatement;
+select * from TaxReturnStatement;
 
 /* This table will be the one that we ultmiately query from the web interface to read out the values that we need as input for the pdf */
 create table CompleteTaxReturnStatement
