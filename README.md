@@ -1,12 +1,20 @@
 # CS360_Project
 
+# To work on the interface:  
+ - In the XAMPP control panel, start MySQL and Apache  
+ - Move all of the necessary files (php file, css stylsheet, and all files associated with fdpf/fpdm) into the 'htdocs' subfolder of the file storage associated with xampp    
+    - In Windows, the path to this subfolder should be c:/xampp/htocs  
+    - Make sure all that the files you need for the project are stored in a subfolder of htdocs. For instance, mine are all stored in a subfolder called 'test-local'.  
+ - In a web browser, enter the URL that points to the php file you are working with. For me, this is typically 'http://localhost/test-local/test.php'.  
+ - Make changes to the php file as needed to develop the interface. Test the interface in the web browser.  
+
 # Current To-Do List
-Refine MaxDeduction query (Seth)
-Add an area to the interface for the user to submit queries directly to the DB (similar to the Input and Output boxes from Joel's sandbox)
-Add an area to the interface for the employer to submit income info (we will need to authenticate the employer's identity somehow, maybe by checking their EmployerID?)
-Instead of writing to a blank PDF, configure the interface to fill a PDF with the relevant values (the form that we will fill is the 1040 on this repo)
-Make the web interface look better -- i.e. add a banner at the top of the page, some background images, and make the layout look more even and professional
-Write insert statements to add sample data to the database
+Refine MaxDeduction query (Seth)  
+Add an area to the interface for the user to submit queries directly to the DB (similar to the Input and Output boxes from Joel's sandbox)  
+Add an area to the interface for the employer to submit income info (we will need to authenticate the employer's identity somehow, maybe by checking their EmployerID?)  
+Instead of writing to a blank PDF, configure the interface to fill a PDF with the relevant values (the form that we will fill is the 1040 on this repo)  
+Make the web interface look better -- i.e. add a banner at the top of the page, some background images, and make the layout look more even and professional  
+Write insert statements to add sample data to the database  
 
 # Prospective Timeline:
 NLT 07 September:  
