@@ -21,7 +21,7 @@ $search_result = null;
 
 $servername = "localhost";
 $username = "root";
-$password = "#SethsMySQLPassword900";
+$password = "";
 $dbname = "semester_project"; //information_schema vs semester_project
 
 // Create connection
@@ -162,7 +162,6 @@ function updateMessages($msgStatus, $msg)
 }
 
 ?>
-
 <!------------- HTML ------------->
 
 <!DOCTYPE html>
@@ -172,6 +171,12 @@ function updateMessages($msgStatus, $msg)
         <title>MyTaxes Portal</title>
         <link href = 'style.css' rel = 'stylesheet'>
     </head>
+    
+    <form action="upload.php" method="post" enctype="multipart/form-data">
+	Select File to Upload:
+	<input type="file" name="file">
+	<input type="submit" name="submit" value="Upload">
+    </form>
 
     <body>
 	<img src="MyTaxesPhoto.jpg" style="width:1500px;height:600px;">
