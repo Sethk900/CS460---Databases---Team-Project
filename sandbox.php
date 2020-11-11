@@ -172,12 +172,6 @@ function updateMessages($msgStatus, $msg)
         <link href = 'style.css' rel = 'stylesheet'>
     </head>
     
-    <form action="upload.php" method="post" enctype="multipart/form-data">
-	Select File to Upload:
-	<input type="file" name="file">
-	<input type="submit" name="submit" value="Upload">
-    </form>
-
     <body>
 	<img src="MyTaxesPhoto.jpg" style="width:1500px;height:600px;">
       <h2>MyTaxes Portal</h2>
