@@ -252,10 +252,16 @@ create function generateTaxReturnStatement(TID numeric(20,0))
 			when @TaxesDue < 0 then 0
 			else @TaxesDue
 		end;
-        select @TaxableIncome, @MaxDeduction, @TotalTax, @TaxesDue, @RefundDue;
+        select @TaxableIncome, @MaxDeduction, @TotalTax, @TaxesDue, @TaxesWitheld, @RefundDue;
         update TaxReturnStatement set AmountOwed=@TaxesDue where TaxPayerID=@TaxPayerID;
 		update TaxReturnStatement set RefundDue=@RefundDue where TaxPayerID=@TaxPayerID;
-		select * from TaxReturnStatement;
+        
+        update CompleteTaxReturnStatement set NumberOfDependents=@NumberOfDependents where TaxPayerID=@TaxPayerID;
+        update CompleteTaxReturnStatement set TotalIncome=@TaxableIncome where TaxPayerID=@TaxPayerID;
+        update CompleteTaxReturnStatement set TaxesWitheld=@TaxesWitheld where TaxPayerID=@TaxPayerID;
+        update CompleteTaxReturnStatement set RefundDue=@RefundDue where TaxPayerID=@TaxPayerID;
+        update CompleteTaxReturnStatement set PaymentDue=@TaxesDue where TaxPayerID=@TaxPayerID;
+        update CompleteTaxReturnStatement set MaxDeduction=@MaxDeduction where TaxPayerID=@TaxPayerID;
 return(TID);
         /*return (result);*/
 end //
@@ -281,11 +287,13 @@ create table CompleteTaxReturnStatement
     TaxableIncome		numeric(10,0),
     TaxesWitheld		numeric(10,0),
     PaymentDue			numeric(10,0),
-    RefundDue			numeric(10,2));
+    RefundDue			numeric(10,2),
+    primary key(TaxPayerID));
 insert into CompleteTaxReturnStatement
 values( @TaxPayerID, @TaxPayerName, @DOB, @SSN, @Address, @City, @State, @NumberOfDependents, @TotalIncome, @MaxDeduction, @TaxableIncome, @TaxesWitheld, @TaxesDue, @RefundDue);
 
 /* a lot of the variables for that insert statement aren't initialized yet...let's do that here */
+set @TaxPayerID = 201920392092039;
 set @TaxPayerName = (select Name from TaxPayers where TaxPayerID=@TaxPayerID);
 set @DOB = (select DOB from TaxPayers where TaxPayerID=@TaxPayerID);
 set @SSN = (select SSN from TaxPayers where TaxPayerID=@TaxPayerID);
