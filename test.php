@@ -171,17 +171,19 @@ function updateMessages($msgStatus, $msg)
 
     <head>
         <title>MyTaxes Portal</title>
-        <link href = 'style.css' rel = 'stylesheet'>
+       <!-- <link href = 'style.css' rel = 'stylesheet'> -->
+	   <style>
+	   body {
+	   	background-image: url("MyTaxesPhoto.jpg");
+		background-repeat: no-repeat;
+  		background-attachment: fixed;
+ 	 	background-size: cover;
+	   }
+	   </style>
     </head>
 
-    <form action="upload.php" method="post" enctype="multipart/form-data">
-        Select File to Upload:
-        <input type="file" name="file">
-        <input type="submit" name="submit" value="Upload">
-    </form>
-
     <body>
-	 <img src="MyTaxesPhoto.jpg" style="width:1500px;height:600px;"> 
+	<!-- <img src="MyTaxesPhoto.jpg" style="width:1500px;height:600px;"> -->
       <h2>MyTaxes Portal</h2>
 	  <form method="post">
 	<input type="submit" name="button1" class="button" value="Generate Tax Return"/>
@@ -401,7 +403,7 @@ ob_end_flush();
         } 
     ?> 
 
-      <form action = "test2.php" method = "post" id = "options">
+      <form action = "test3.php" method = "post" id = "options">
 
       
 
@@ -422,7 +424,7 @@ ob_end_flush();
       </form>
 
       <!-- OUTPUT SECTION -->
-      <form action = "test2.php" method = "post">
+      <form action = "test3.php" method = "post">
 
         <section class = "block-of-text">
           <fieldset>
@@ -463,7 +465,13 @@ ob_end_flush();
         </section>
       </form>
 
-      <section class = "block-of-text">
+	  <form action="upload.php" method="post" enctype="multipart/form-data">
+        Select File to Upload:
+        <input type="file" name="file">
+        <input type="submit" name="submit" value="Upload">
+   	 </form>
+	 
+	  <section class = "block-of-text">
         <a href="test2.php"><input type = "submit" name = "reset" value = "Reset Page"/></a>
       </section>
 
@@ -473,3 +481,11 @@ ob_end_flush();
 
     </body>
 </html>
+<?php
+echo nl2br("\n");
+echo nl2br("PDF files currently available:\n");
+foreach(glob("*.pdf") as $file) {
+    echo nl2br($file."\n");
+	//nl2br(1);
+}
+?>
