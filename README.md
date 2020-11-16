@@ -12,7 +12,7 @@
 Refine MaxDeduction query (Seth)  
 Add an area to the interface for the user to submit queries directly to the DB (similar to the Input and Output boxes from Joel's sandbox)  
 Add an area to the interface for the employer to submit income info (we will need to authenticate the employer's identity somehow, maybe by checking their EmployerID?)  
-Instead of writing to a blank PDF, configure the interface to fill a PDF with the relevant values (the form that we will fill is the 1040 on this repo)  
+Improve upon the functionality of filling in the 1040 form pdf. 
 Make the web interface look better -- i.e. add a banner at the top of the page, some background images, and make the layout look more even and professional  
 Write insert statements to add sample data to the database  
 
@@ -71,5 +71,11 @@ Once saved and submitted, it cannot be modified. But can be amended and resubmit
 Using PHP to generate a .pdf from a MySQL database:
 https://www.plus2net.com/php_tutorial/pdf-data-student.php
 https://www.phpflow.com/php/generate-pdf-file-mysql-database-using-php/
+
+PDFTK Website for install + other resources for understanding:
+https://www.pdflabs.com/tools/pdftk-server/
+https://stackoverflow.com/a/9142076
+https://stackoverflow.com/questions/2127878/extract-pdf-form-field-names-from-a-pdf-form
+https://talkingpdf.org/forms-data-format-fdf/#:~:text=A%20Forms%20Data%20Format%20(FDF,Document%20Format%3B%20ISO%2D32000.
 
 
