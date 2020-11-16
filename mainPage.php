@@ -233,12 +233,14 @@ function updateMessages($msgStatus, $msg)
 	
 
 
-	/////////////////////////// PDF Magic happens here ////////////////////////////////////// - Edits/Additions by Alex
+	
+/* PDF Magic happens here  - Edits/Additions by Alex */
 
 
 	/*	The base 1040 form is converted into a text-fillable file type '.fdf', and this is the base version to work from */
 	$filename = getcwd() . "/unfilled.fdf";
-
+	$outfilename = "filled.fdf";
+		
 	/* --- Helpful resource(s) to understand how this part works --- 
 		- https://stackoverflow.com/a/3278051
 		- The 'LEGEND.fdf' file is an edited version of 'unfilled.fdf', 
@@ -274,13 +276,13 @@ function updateMessages($msgStatus, $msg)
 	
 
 
-	file_put_contents( $filename , implode( "\n", $lines ) );
+	file_put_contents( $outfilename , implode( "\n", $lines ) );
 
 
 	/* Fills the 1040 form with our modified unfilled.fdf, outputs as 1040_filled
 	Need to install pdtfk on the server, in the local path, to make this shell call.*/
 
-	exec('pdftk 1040_Form.pdf fill_form unfilled.fdf output 1040_Filled.pdf');
+	exec('pdftk 1040_Form.pdf fill_form filled.fdf output 1040_Filled.pdf');
 	
 
 	/* force downloads file */
@@ -291,8 +293,7 @@ function updateMessages($msgStatus, $msg)
 	readfile($file_url);
 
 
-
-	/////////////////////////// END ///////////////////////////////////////////////////////// - End of current edits/additions by alex
+/* End of current Edits/Additions by Alex */
 
 
 
