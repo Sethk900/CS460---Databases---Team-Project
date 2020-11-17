@@ -304,7 +304,7 @@ function updateMessages($msgStatus, $msg)
         } 
     ?> 
 
-      <form action = "test3.php" method = "post" id = "options">
+      <form action = "mainPage.php" method = "post" id = "options">
 
       
 
@@ -325,7 +325,7 @@ function updateMessages($msgStatus, $msg)
       </form>
 
       <!-- OUTPUT SECTION -->
-      <form action = "test3.php" method = "post">
+      <form action = "mainPage.php" method = "post">
 
         <section class = "block-of-text">
           <fieldset>
@@ -373,7 +373,7 @@ function updateMessages($msgStatus, $msg)
    	 </form>
 	 
 	  <section class = "block-of-text">
-        <a href="test2.php"><input type = "submit" name = "reset" value = "Reset Page"/></a>
+        <a href="mainPage.php"><input type = "submit" name = "reset" value = "Reset Page"/></a>
       </section>
 
       <?php $conn->close(); ?>
