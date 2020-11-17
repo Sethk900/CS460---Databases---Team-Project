@@ -2,9 +2,6 @@
 
 //========== Global Parameters ==========
 
-$Line1 = $Line2 = $Line3 = $Line4 = $Line5 = $Line6 = $Line7 = $Line8 = '';
-
-
 $msgIndex = 0;
 
 $targetDB = '';
