@@ -61,7 +61,7 @@ create table WorkExpenses
 	Description		varchar(50),
 	Amount	numeric(10, 2),
     foreign key(TaxPayerID) references TaxPayers(TaxPayerID),
-    primary key(TaxPayerID));
+    primary key(TaxPayerID, Description, Amount));
 insert into WorkExpenses values(201920392092039, "Bought candies for team", 10.00);
 
 create table CityTax
@@ -105,7 +105,7 @@ create table RentedHome
     foreign key(TaxPayerID) references TaxPayers(TaxPayerID));
 insert into HasDependent values( 201920392092039, "Alexis Rose", 736728172, "Daughter");
 insert into HasDependent values( 201920392092039, "David Rose", 920938293, "Son");
- 
+
 /* Query to determine total taxes withheld */
 set @TotalTaxesWithheld=(select sum(FederalTaxesWithheld)
 from GrossTaxableIncomes
@@ -230,7 +230,9 @@ create function generateTaxReturnStatement(TID numeric(20,0))
 			when (select IsHandicapped from TaxPayers where TaxPayerID=@TaxPayerID) = "Yes" then 1
 			else 0
 		end;
+        
         set @NumberOfDependents = (select count(*) from HasDependent where TaxPayerID=@TaxPayerID);
+        
         set @MaxDeduction= 700 + /* Base automatic deduction */
 			(@IsWoundedVet*2000) /* Wounded vet deduction */
 			+(@IsWomanOrElderly*500) /* Woman or elderly deduction */

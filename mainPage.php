@@ -24,7 +24,7 @@ $search_result = null;
 
 $servername = "localhost";
 $username = "root";
-$password = "";
+$password = "#SethsMySQLPassword900";
 $dbname = "semester_project"; //information_schema vs semester_project
 
 // Create connection
@@ -188,6 +188,24 @@ function updateMessages($msgStatus, $msg)
     <body>
 	<!-- <img src="MyTaxesPhoto.jpg" style="width:1500px;height:600px;"> -->
       <h2>MyTaxes Portal</h2>
+	  
+	  <section class = "block-of-text">
+        <a href="addTaxableIncome.php"><input type = "submit" name = "reset" value = "Add a Taxable Income"/></a>
+      </section>
+	  
+	   <section class = "block-of-text">
+        <a href="addWorkExpenses.php"><input type = "submit" name = "reset" value = "Add a Deducible Work Expense"/></a>
+      </section>
+	  
+	  <section class = "block-of-text">
+        <a href="addEmployer.php"><input type = "submit" name = "reset" value = "Add an Employer"/></a>
+      </section>
+	  
+	  <section class = "block-of-text">
+        <a href="addDependent.php"><input type = "submit" name = "reset" value = "Add a Dependent"/></a>
+      </section>
+	  
+	  
 	  <form method="post">
 	<input type="submit" name="button1" class="button" value="Generate Tax Return"/>
 	</form>
