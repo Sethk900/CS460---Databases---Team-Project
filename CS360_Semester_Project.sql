@@ -147,6 +147,8 @@ insert into TaxReturnStatement values(@TaxPayerID, 0, 0);
 
 set @TaxableIncome=(select sum(Amount) from GrossTaxableIncomes where TaxPayerID=@TaxPayerID)-@MaxDeduction;
 
+set @CityTaxOwed = (select Amount from CityTax where City=(select City from TaxPayers where TaxPayerID=@TaxPayerId));
+
 delimiter //
 create function calcTax(income numeric(10,2))
     returns numeric(10,2) deterministic
@@ -232,7 +234,8 @@ create function generateTaxReturnStatement(TID numeric(20,0))
 		end;
         
         set @NumberOfDependents = (select count(*) from HasDependent where TaxPayerID=@TaxPayerID);
-        
+        set @CityTaxOwed = (select Amount from CityTax where City=(select City from TaxPayers where TaxPayerID=@TaxPayerId));
+
         set @MaxDeduction= 700 + /* Base automatic deduction */
 			(@IsWoundedVet*2000) /* Wounded vet deduction */
 			+(@IsWomanOrElderly*500) /* Woman or elderly deduction */
@@ -242,7 +245,7 @@ create function generateTaxReturnStatement(TID numeric(20,0))
             +(@NumberOfDependents*2000);
            
 	set @TaxableIncome=(select sum(Amount) from GrossTaxableIncomes where TaxPayerID=@TaxPayerID)-@MaxDeduction;
-		set @TotalTax = calcTax(@TaxableIncome);
+		set @TotalTax = calcTax(@TaxableIncome) + @CityTaxOwed;
         set @TaxesWitheld = (select sum(FederalTaxesWithheld) from GrossTaxableIncomes where TaxPayerID=@TaxPayerID);
 		set @RefundDue = (@TotalTax-@TaxesWitheld)*-1;
 		set @RefundDue = 

@@ -1,7 +1,7 @@
 <html>
 <style>
 	   body {
-	   	background-image: url("expense.jpg");
+	   	background-image: url("refund.jpg");
 		background-repeat: no-repeat;
   		background-attachment: fixed;
  	 	background-size: cover;
@@ -9,15 +9,17 @@
 	   </style>
 <body>
 
-<h1>Use this form to add any of your dependents who are not reflected in the database.</h1>
+<h1>Fill out the following questionnaire to get the maximum possible deduction.</h1>
 
-<form action="addWorkExpenses.php" method="post">
+<form action="questionnaire.php" method="post">
 
-Description of Expense: <input type="text" name="Description" /><br><br>
+What is your gender? (Male/Female): <input type="text" name="Gender" /><br><br>
 
-Expense Amount: <input type="text" name="Amount" /><br><br>
+Are you a wounded veteran? (Yes/No): <input type="text" name="WoundedVet" /><br><br>
 
+Are you legally handicapped? (Yes/No): <input type="text" name="Handicapped" /><br><br>
  
+Are you over 65 years of age? (Yes/No): <input type="text" name="Elderly" /><br><br>
 
 <input type="submit" />
 
@@ -51,14 +53,8 @@ if (!$conn)
 
 mysqli_select_db($conn, $dbname);
  
-if (isset($_POST["Amount"])){
-$sql="INSERT INTO WorkExpenses (TaxPayerID, Description, Amount)
-
-VALUES
-
-(201920392092039, '$_POST[Description]','$_POST[Amount]')";
-
- 
+if (isset($_POST["Gender"])){
+$sql="UPDATE TaxPayers SET Gender='$_POST[Gender]', IsElderly='$_POST[Elderly]', IsHandicapped='$_POST[Handicapped]', IsWoundedVet='$_POST[WoundedVet]' WHERE TaxPayerID=201920392092039";
 
 if (!$conn->query($sql))
 
@@ -68,7 +64,7 @@ if (!$conn->query($sql))
 
   }
 
-echo "Expense added";
+echo "Updated taxpayer information.";
 
  
 }

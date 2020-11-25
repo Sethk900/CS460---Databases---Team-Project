@@ -2,6 +2,9 @@
 
 //========== Global Parameters ==========
 
+$Line1 = $Line2 = $Line3 = $Line4 = $Line5 = $Line6 = $Line7 = $Line8 = '';
+
+
 $msgIndex = 0;
 
 $targetDB = '';
@@ -185,6 +188,10 @@ function updateMessages($msgStatus, $msg)
     <body>
 	<!-- <img src="MyTaxesPhoto.jpg" style="width:1500px;height:600px;"> -->
       <h2>MyTaxes Portal</h2>
+	  
+	  <section class = "block-of-text">
+        <a href="questionnaire.php"><input type = "submit" name = "reset" value = "Complete Taxpayer Questionnaire"/></a>
+      </section>
 	  
 	  <section class = "block-of-text">
         <a href="addTaxableIncome.php"><input type = "submit" name = "reset" value = "Add a Taxable Income"/></a>
