@@ -190,8 +190,16 @@ function updateMessages($msgStatus, $msg)
       <h2>MyTaxes Portal</h2>
 	  
 	  <section class = "block-of-text">
+        <a href="downloadFiles.php"><input type = "submit" name = "reset" value = "View and Download Available Documents"/></a>
+      </section>
+	  
+	  <?php echo nl2br("\n"); ?>
+	  
+	  <section class = "block-of-text">
         <a href="questionnaire.php"><input type = "submit" name = "reset" value = "Complete Taxpayer Questionnaire"/></a>
       </section>
+	  
+	  <?php echo nl2br("\n"); ?>
 	  
 	  <section class = "block-of-text">
         <a href="addTaxableIncome.php"><input type = "submit" name = "reset" value = "Add a Taxable Income"/></a>
@@ -210,9 +218,15 @@ function updateMessages($msgStatus, $msg)
       </section>
 	  
 	  
+	  <?php echo nl2br("\n"); ?>
+	  
 	  <form method="post">
 	<input type="submit" name="button1" class="button" value="Generate Tax Return"/>
 	</form>
+	
+	<?php echo nl2br("\n"); ?>
+	<?php echo nl2br("\n"); ?>
+	
 	  <?php
         if(array_key_exists('button1', $_POST)) { 
             button1(); 
@@ -323,7 +337,7 @@ function updateMessages($msgStatus, $msg)
 
             //echo "This is Button1 that is selected"; 
 
-        } 
+        } // end button1() function
     ?> 
 
       <form action = "mainPage.php" method = "post" id = "options">
@@ -404,11 +418,6 @@ function updateMessages($msgStatus, $msg)
 
     </body>
 </html>
-<?php
-echo nl2br("\n");
-echo nl2br("PDF files currently available:\n");
-foreach(glob("*.pdf") as $file) {
-    echo nl2br($file."\n");
-	//nl2br(1);
-}
-?>
+
+
+
