@@ -212,7 +212,6 @@ update TaxReturnStatement set RefundDue=@RefundDue where TaxPayerID=@TaxPayerID;
 select * from TaxReturnStatement
 
 
-
 /* Procedure we can use with a TaxPayerID to generate tax return statement */
 delimiter //
 create function generateTaxReturnStatement(TID numeric(20,0))
@@ -257,7 +256,6 @@ create function generateTaxReturnStatement(TID numeric(20,0))
 			when @TaxesDue < 0 then 0
 			else @TaxesDue
 		end;
-        select @TaxableIncome, @MaxDeduction, @TotalTax, @TaxesDue, @TaxesWitheld, @RefundDue;
         update TaxReturnStatement set AmountOwed=@TaxesDue where TaxPayerID=@TaxPayerID;
 		update TaxReturnStatement set RefundDue=@RefundDue where TaxPayerID=@TaxPayerID;
         
@@ -308,6 +306,4 @@ set @State = (select State from TaxPayers where TaxPayerID=@TaxPayerID);
 set @NumberOfDependents = (select count(*) from HasDependent where TaxPayerID=@TaxPayerID);
 set @TotalIncome = (select sum(Amount) from GrossTaxableIncomes where TaxPayerID=@TaxPayerID);
 /* The remaining variables can be set by calling the generateTaxReturnStatement function */
-    select * from CompleteTaxReturnStatement
-    
-    
+    select * from CompleteTaxReturnStatement;
