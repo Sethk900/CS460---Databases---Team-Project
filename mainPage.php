@@ -332,6 +332,10 @@ function updateMessages($msgStatus, $msg)
 	header('Content-Type: application/pdf');
 	header("Content-Transfer-Encoding: Binary");
 	header("Content-disposition: attachment; filename=1040_Filled.pdf");
+		
+	ob_clean(); 
+	flush();
+		
 	readfile($file_url);
 
 
