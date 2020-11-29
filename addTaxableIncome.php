@@ -17,7 +17,7 @@ Income Amount for the Year: <input type="text" name="Amount" /><br><br>
 
 Federal Taxes Witheld: <input type="text" name="FederalTaxesWithheld" /><br><br>
 
-Income Type: <input type="text" name="Type" /><br><br>
+Income Type (e.g. Income, Capital Gains, etc): <input type="text" name="Type" /><br><br>
 
 <input type="submit" />
 

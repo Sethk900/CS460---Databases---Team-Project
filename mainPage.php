@@ -189,12 +189,19 @@ function updateMessages($msgStatus, $msg)
 	<!-- <img src="MyTaxesPhoto.jpg" style="width:1500px;height:600px;"> -->
       <h2>MyTaxes Portal</h2>
 	  
+	 <?php echo nl2br("For Employers:\n"); ?>
+	 <section class = "block-of-text">
+        <a href="uploadFiles.php"><input type = "submit" name = "reset" value = "Upload W-2 Forms and Other Income Statements"/></a>
+      </section>
+	  
+	  <?php echo nl2br("\n"); ?>
+	 
+	  <?php echo nl2br("For Users:\n"); ?>
 	  <section class = "block-of-text">
         <a href="downloadFiles.php"><input type = "submit" name = "reset" value = "View and Download Available Documents"/></a>
       </section>
 	  
 	  <?php echo nl2br("\n"); ?>
-	  
 	  <section class = "block-of-text">
         <a href="questionnaire.php"><input type = "submit" name = "reset" value = "Complete Taxpayer Questionnaire"/></a>
       </section>
@@ -224,8 +231,7 @@ function updateMessages($msgStatus, $msg)
 	<input type="submit" name="button1" class="button" value="Generate Tax Return"/>
 	</form>
 	
-	<?php echo nl2br("\n"); ?>
-	<?php echo nl2br("\n"); ?>
+	<?php echo nl2br("\n\n"); ?>
 	
 	  <?php
         if(array_key_exists('button1', $_POST)) { 
@@ -342,7 +348,7 @@ function updateMessages($msgStatus, $msg)
 
       <form action = "mainPage.php" method = "post" id = "options">
 
-      
+      <?php echo nl2br("Submit an SQL Query to the database:\n"); ?>
 
         <!-- INPUT SECTION -->
 
@@ -402,12 +408,8 @@ function updateMessages($msgStatus, $msg)
         </section>
       </form>
 
-	  <form action="upload.php" method="post" enctype="multipart/form-data">
-        Select File to Upload:
-        <input type="file" name="file">
-        <input type="submit" name="submit" value="Upload">
-   	 </form>
 	 
+	 <?php echo nl2br("\n\n"); ?>
 	  <section class = "block-of-text">
         <a href="mainPage.php"><input type = "submit" name = "reset" value = "Reset Page"/></a>
       </section>

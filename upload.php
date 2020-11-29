@@ -1,8 +1,18 @@
+<html>
+<style>
+	   body {
+	   	background-image: url("upload.png");
+		background-repeat: no-repeat;
+  		background-attachment: fixed;
+ 	 	background-size: cover;
+	   }
+	   </style>
+<body>
 <?php
 $statusMsg = '';
 
 //file upload path
-$targetDir = "/opt/lampp/uploads/";
+$targetDir = "C:\\xampp\htdocs\\test-local\\";
 $fileName = basename($_FILES["file"]["name"]);
 $targetFilePath = $targetDir . $fileName;
 $fileType = pathinfo($targetFilePath,PATHINFO_EXTENSION);
@@ -27,3 +37,9 @@ if(isset($_POST["submit"]) && !empty($_FILES["file"]["name"])) {
 //display status message
 echo $statusMsg;
 ?>
+
+<section class = "block-of-text">
+        <a href="mainPage.php"><input type = "submit" name = "reset" value = "Back"/></a>
+      </section>
+</body>
+</html>

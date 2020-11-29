@@ -9,7 +9,7 @@
 	   </style>
 <body>
 
-<h1>Use this form to add any of your dependents who are not reflected in the database.</h1>
+<h1>Use this form to add any of your work expenses that aren't in the database.</h1>
 
 <form action="addWorkExpenses.php" method="post">
 

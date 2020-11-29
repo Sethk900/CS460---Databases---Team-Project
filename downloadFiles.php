@@ -42,4 +42,8 @@ $fileListImplode = '['.$fileListImplode.']';
     }
     arrayEntries.forEach(CreateButtons);
 </script>
+<?php echo nl2br("\n\n"); ?>
+<section class = "block-of-text">
+        <a href="mainPage.php"><input type = "submit" name = "reset" value = "Back"/></a>
+      </section>
 </html>
