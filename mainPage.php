@@ -23,9 +23,9 @@ $search_result = null;
 //========== Database Connection ==========
 
 $servername = "localhost";
-$username = "root";
-$password = "#SethsMySQLPassword900";
-$dbname = "semester_project"; //information_schema vs semester_project
+$username = "mytax2";
+$password = "&1E-epifQh,8";
+$dbname = "mytax2"; //information_schema vs semester_project
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
@@ -39,7 +39,7 @@ if ($conn->connect_error) {
 if(isset($_POST['submit']))
 {
   # This variable should be set to the DB name
-  $selection = "semester_project"; //$_POST['sqldblist'];
+  $selection = "mytax2"; //$_POST['sqldblist'];
 
   if($selection !== 'Select Database') {$targetDB = $selection;}
 
@@ -214,6 +214,14 @@ function updateMessages($msgStatus, $msg)
 	  
 	   <section class = "block-of-text">
         <a href="addWorkExpenses.php"><input type = "submit" name = "reset" value = "Add a Deducible Work Expense"/></a>
+      </section>
+	  
+	  <section class = "block-of-text">
+        <a href="addMedicalExpenses.php"><input type = "submit" name = "reset" value = "Add a Medical Expense"/></a>
+      </section>
+	  
+	  <section class = "block-of-text">
+        <a href="addCharitableContributions.php"><input type = "submit" name = "reset" value = "Add a Charitable Contribution"/></a>
       </section>
 	  
 	  <section class = "block-of-text">

@@ -1,7 +1,7 @@
 <html>
 <style>
 	   body {
-	   	background-image: url("refund.jpg");
+	   	background-image: url("medicine.jpg");
 		background-repeat: no-repeat;
   		background-attachment: fixed;
  	 	background-size: cover;
@@ -9,17 +9,15 @@
 	   </style>
 <body>
 
-<h1>Fill out the following questionnaire to get the maximum possible deduction.</h1>
+<h1>If you spent money out of pocket on healthcare this year, note your expenses on this form to get a larger tax deduction.</h1>
 
-<form action="questionnaire.php" method="post">
+<form action="addMedicalExpenses.php" method="post">
 
-What is your gender? (Male/Female): <input type="text" name="Gender" /><br><br>
+Description of Expense: <input type="text" name="Description" /><br><br>
 
-Are you a wounded veteran? (Yes/No): <input type="text" name="WoundedVet" /><br><br>
+Expense Amount: <input type="text" name="Amount" /><br><br>
 
-Are you legally handicapped? (Yes/No): <input type="text" name="Handicapped" /><br><br>
  
-Are you over 65 years of age? (Yes/No): <input type="text" name="Elderly" /><br><br>
 
 <input type="submit" />
 
@@ -53,8 +51,14 @@ if (!$conn)
 
 mysqli_select_db($conn, $dbname);
  
-if (isset($_POST["Gender"])){
-$sql="UPDATE TaxPayers SET Gender='$_POST[Gender]', IsElderly='$_POST[Elderly]', IsHandicapped='$_POST[Handicapped]', IsWoundedVet='$_POST[WoundedVet]' WHERE TaxPayerID=201920392092039";
+if (isset($_POST["Amount"])){
+$sql="INSERT INTO MedicalExpenses (TaxPayerID, Description, Amount)
+
+VALUES
+
+(201920392092039, '$_POST[Description]','$_POST[Amount]')";
+
+ 
 
 if (!$conn->query($sql))
 
@@ -64,7 +68,7 @@ if (!$conn->query($sql))
 
   }
 
-echo "Updated taxpayer information.";
+echo "Expense added";
 
  
 }

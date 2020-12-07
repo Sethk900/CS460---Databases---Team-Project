@@ -64,6 +64,20 @@ create table WorkExpenses
     primary key(TaxPayerID, Description, Amount));
 insert into WorkExpenses values(201920392092039, "Bought candies for team", 10.00);
 
+create table MedicalExpenses
+	(TaxPayerID		numeric(20,0) not null,
+	Description		varchar(50),
+	Amount	numeric(10, 2),
+    foreign key(TaxPayerID) references TaxPayers(TaxPayerID),
+    primary key(TaxPayerID, Description, Amount));
+    
+create table CharitableContributions
+	(TaxPayerID		numeric(20,0) not null,
+	Description		varchar(50),
+	Amount	numeric(10, 2),
+    foreign key(TaxPayerID) references TaxPayers(TaxPayerID),
+    primary key(TaxPayerID, Description, Amount));
+    
 create table CityTax
 	(City varchar(20) not null,
     State varchar(20) not null,
@@ -234,15 +248,40 @@ create function generateTaxReturnStatement(TID numeric(20,0))
         
         set @NumberOfDependents = (select count(*) from HasDependent where TaxPayerID=@TaxPayerID);
         set @CityTaxOwed = (select Amount from CityTax where City=(select City from TaxPayers where TaxPayerID=@TaxPayerId));
-
+        
+		set @WorkExpenses = (select sum(Amount) from WorkExpenses where TaxPayerID=@TaxPayerID);
+        set @WorkExpenses = case
+			when @WorkExpenses > 0 then @WorkExpenses
+            else 0
+		end;
+        
+        set @CharitableContributions = (select sum(Amount) from CharitableContributions where TaxPayerID=@TaxPayerID);
+        set @CharitableContributions = case
+			when @CharitableContributions > 0 then @CharitableContributions
+            else 0
+		end;
+        
+        set @MedicalExpenses = (select sum(Amount) from MedicalExpenses where TaxPayerID=@TaxPayerID);
+        set @MedicalExpenses = case
+			when @MedicalExpenses > 0 then @MedicalExpenses
+            else 0
+		end;
+        
+        set @StudentLoanInterest = ((select Amount from StudentLoans where TaxPayerID=@TaxPayerID)*(select InterestRate from StudentLoans where TaxPayerID=@TaxPayerID))/100;
+        set @StudentLoanInterest = case
+			when @StudentLoanInterest > 0 then @StudentLoanInterest
+            else 0
+		end;
         set @MaxDeduction= 700 + /* Base automatic deduction */
 			(@IsWoundedVet*2000) /* Wounded vet deduction */
 			+(@IsWomanOrElderly*500) /* Woman or elderly deduction */
 			+(@IsHandicap*750) /*Handicapped deduction */
-			+((select Amount from StudentLoans where TaxPayerID=@TaxPayerID)*(select InterestRate from StudentLoans where TaxPayerID=@TaxPayerID))/100
-			+(select sum(Amount) from WorkExpenses where TaxPayerID=@TaxPayerID) /* Work Expenses are deductible */
-            +(@NumberOfDependents*2000);
-           
+			+@StudentLoanInterest
+			+@WorkExpenses /* Work Expenses are deductible */
+            +(@NumberOfDependents*2000)
+            +@CharitableContributions
+            +@MedicalExpenses;
+          
 	set @TaxableIncome=(select sum(Amount) from GrossTaxableIncomes where TaxPayerID=@TaxPayerID)-@MaxDeduction;
 		set @TotalTax = calcTax(@TaxableIncome) + @CityTaxOwed;
         set @TaxesWitheld = (select sum(FederalTaxesWithheld) from GrossTaxableIncomes where TaxPayerID=@TaxPayerID);
@@ -273,7 +312,7 @@ delimiter ;
 select @NumberOfDependents;
 update TaxReturnStatement set RefundDue=0 where TaxPayerID=201920392092039;
 set @test = generateTaxReturnStatement(201920392092039);
-select * from TaxReturnStatement;
+select * from CompleteTaxReturnStatement;
 
 /* This table will be the one that we ultmiately query from the web interface to read out the values that we need as input for the pdf */
 create table CompleteTaxReturnStatement

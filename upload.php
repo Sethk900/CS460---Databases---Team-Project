@@ -12,7 +12,7 @@
 $statusMsg = '';
 
 //file upload path
-$targetDir = "C:\\xampp\htdocs\\test-local\\";
+$targetDir = "/home/uycajqgk6r7o/public_html/mytax2.kb-projects.com/";
 $fileName = basename($_FILES["file"]["name"]);
 $targetFilePath = $targetDir . $fileName;
 $fileType = pathinfo($targetFilePath,PATHINFO_EXTENSION);

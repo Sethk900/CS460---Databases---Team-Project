@@ -28,9 +28,9 @@ Income Type (e.g. Income, Capital Gains, etc): <input type="text" name="Type" />
 <?php
 
 $servername = "localhost";
-$username = "root";
-$password = "#SethsMySQLPassword900";
-$dbname = "semester_project"; //information_schema vs semester_project
+$username = "mytax2";
+$password = "&1E-epifQh,8";
+$dbname = "mytax2"; //information_schema vs semester_project
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
