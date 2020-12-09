@@ -1,7 +1,9 @@
-/* These statements are handy for when we make a change to the schema or function and want to redefine them */
+/* These drop statements are for when we make a change to the scheme or the functions and need to re-declare them */
 drop table CityTax, GrossTaxableIncomes, TaxReturnStatement, OwnsHome, OwnsRental, StudentLoans, OwnsBusiness, EmployedBy, RentedHome, TaxPayers, WorkExpenses;
 drop function CalcTax;
+drop function generateTaxReturnStatement;
 
+/*----------CREATE TABLE STATEMENTS------------------*/
 create table TaxPayers
 	(TaxPayerID 	numeric(20,0) not null,
     Name 			varchar(20),
@@ -120,113 +122,32 @@ create table RentedHome
 insert into HasDependent values( 201920392092039, "Alexis Rose", 736728172, "Daughter");
 insert into HasDependent values( 201920392092039, "David Rose", 920938293, "Son");
 
-/* Query to determine total taxes withheld */
-set @TotalTaxesWithheld=(select sum(FederalTaxesWithheld)
-from GrossTaxableIncomes
-where TaxPayerID=@TaxPayerID);
-
-/* Automatic Deductions: automatic=$3000, female/senior=$500, handicap=$750, woundedvet=$2000 */
-/* To calculate this, we must sum the automatic deduction with all other possible itemized deductions */
-/* See here for other things we want to deduct: https://www.policygenius.com/blog/tax-deductions-tax-credits-you-can-take/ */
-set @IsWoundedVet = case /* case woundedvet='yes' then 1 case woundedvet='no' then 0 */
-	when (select IsWoundedVet from TaxPayers where TaxPayerID=@TaxPayerID) = "Yes" then 1
-    else 0
-end;
-set @IsWomanOrElderly = case /* same as above, but with the gender and elderly columns in TaxPayers row */
-	when (select Gender from TaxPayers where TaxPayerID=@TaxPayerID) = "Female" then "1"
-    when (select IsElderly from TaxPayers where TaxPayerID=@TaxPayerID) = "Yes" then "1"
-    else 0
-end;
-set @IsHandiCap = case
-	when (select IsHandicapped from TaxPayers where TaxPayerID=@TaxPayerID) = "Yes" then 1
-	else 0
-end;
-
-set @NumberOfDependents = (select count(*) from HasDependent where TaxPayerID=@TaxPayerID);
-set @MaxDeduction= 700 + /* Base automatic deduction */
-	(@IsWoundedVet*2000) /* Wounded vet deduction */
-    +(@IsWomanOrElderly*500) /* Woman or elderly deduction */
-    +(@IsHandicap*750) /*Handicapped deduction */
-    +((select Amount from StudentLoans where TaxPayerID=@TaxPayerID)*(select InterestRate from StudentLoans where TaxPayerID=@TaxPayerID))/100
-    +(select sum(Amount) from WorkExpenses where TaxPayerID=@TaxPayerID) /* Work Expenses are deductible */
-    +(@NumberOfDependents*2000);
-
- /* We will store the final tax return info for a given taxpayer in this table */
+create table CompleteTaxReturnStatement
+	(TaxPayerID			numeric(20,0) not null,
+	Name 				varchar(20),
+    DOB 				numeric(8,0),
+    SSN					numeric(9,0),
+    StreetAddress		varchar(30),
+    City 				varchar(20),
+    State				varchar(10),
+    NumberOfDependents	numeric(3,0),
+    TotalIncome			numeric(10,0),
+    MaxDeduction		numeric(10,0),
+    TaxableIncome		numeric(10,0),
+    TaxesWitheld		numeric(10,0),
+    PaymentDue			numeric(10,0),
+    RefundDue			numeric(10,2),
+    primary key(TaxPayerID));
+    
 create table TaxReturnStatement
 	(TaxPayerID				numeric(20, 0) not null,
 	AmountOwed				numeric(10, 2),
     RefundDue				numeric(10,2),
 	primary key(TaxPayerID));
-insert into TaxReturnStatement values(@TaxPayerID, 0, 0);
 
-set @TaxableIncome=(select sum(Amount) from GrossTaxableIncomes where TaxPayerID=@TaxPayerID)-@MaxDeduction;
+/*--------------------FUNCTIONS----------------------*/
 
-set @CityTaxOwed = (select Amount from CityTax where City=(select City from TaxPayers where TaxPayerID=@TaxPayerId));
-
-delimiter //
-create function calcTax(income numeric(10,2))
-    returns numeric(10,2) deterministic
-    begin
-        declare result numeric(10,2);
-        if income > 35000 then
-            set result = (income - 35000) * 0.3;
-            set result = result + 17000 * 0.25;
-            set result = result + 7000 * 0.2;
-            set result = result + 6000 * 0.15;
-            set result = result + 5000 * 0.1;
-        elseif income > 18000 then
-            set result = (income - 18000) * 0.25;
-            set result = result + 7000 * 0.2;
-            set result = result + 6000 * 0.15;
-            set result = result + 5000 * 0.1;
-        elseif income > 11000 then
-            set result = (income - 11000) * 0.2;
-            set result = result + 6000 * 0.15;
-            set result = result + 5000 * 0.1;
-        elseif income > 5000 then
-            set result = (income - 5000) * 0.15;
-            set result = result + 5000 * 0.1;
-        else
-            set result = income * 0.1;
-        end if;
-        return (result);
-    end //
-delimiter ;
-
-set @TotalTax = calcTax(@TaxableIncome);
-
-/* So, all of our variables at this point are:
-	IsWoundedVet: indicates whether the taxpayer is a wounded vet or not
-	IsWomanOrElderly: indicates whether the taxpayer is a woman or elderly
-    IsHandicapped: indicates whether the taxpayer is handicapped
-	MaxDeduction: indicates the total deductions for the taxpayer
-	TaxableIncome: indicates the total amount of the taxpayer's income that is taxable
-	TotalTax: indicates the amount of taxes due to the federal government
-Now, we need:
-	RefundDue: If the taxpayer had income witheld that exceeds TotalDax, they are due a refund
-	TaxesDue: If the taxpayer has income witheld that does not exceed TotalTax, then they owe a tax payment
-RefundDue and TaxesDue are the variables that we will use to generate a tax return statement. 
-*/
-set @TaxesWitheld = (select sum(FederalTaxesWithheld) from GrossTaxableIncomes where TaxPayerID=@TaxPayerID);
-set @RefundDue = (@TotalTax-@TaxesWitheld)*-1;
-set @RefundDue = 
-	case when @RefundDue < 0 then 0
-    else @RefundDue
-end;
-select @RefundDue;
-
-set @TaxesDue = @TotalTax - @TaxesWitheld;
-set @TaxesDue = case
-	when @TaxesDue < 0 then 0
-    else @TaxesDue
-end;
-
-update TaxReturnStatement set AmountOwed=@TaxesDue where TaxPayerID=@TaxPayerID;
-update TaxReturnStatement set RefundDue=@RefundDue where TaxPayerID=@TaxPayerID;
-select * from TaxReturnStatement
-
-
-/* Procedure we can use with a TaxPayerID to generate tax return statement */
+/* The following function accepts a TaxPayerID as input, calculates the values relevant to that person's tax return statement, and stores them in the CompleteTaxReturnStatement table */
 delimiter //
 create function generateTaxReturnStatement(TID numeric(20,0))
 	returns numeric(20,0) deterministic
@@ -281,8 +202,9 @@ create function generateTaxReturnStatement(TID numeric(20,0))
             +(@NumberOfDependents*2000)
             +@CharitableContributions
             +@MedicalExpenses;
-          
-	set @TaxableIncome=(select sum(Amount) from GrossTaxableIncomes where TaxPayerID=@TaxPayerID)-@MaxDeduction;
+         
+        set @TotalIncome=(select sum(Amount) from GrossTaxableIncomes where TaxPayerID=@TaxPayerID); 
+		set @TaxableIncome=(select sum(Amount) from GrossTaxableIncomes where TaxPayerID=@TaxPayerID)-@MaxDeduction;
 		set @TotalTax = calcTax(@TaxableIncome) + @CityTaxOwed;
         set @TaxesWitheld = (select sum(FederalTaxesWithheld) from GrossTaxableIncomes where TaxPayerID=@TaxPayerID);
 		set @RefundDue = (@TotalTax-@TaxesWitheld)*-1;
@@ -299,7 +221,7 @@ create function generateTaxReturnStatement(TID numeric(20,0))
 		update TaxReturnStatement set RefundDue=@RefundDue where TaxPayerID=@TaxPayerID;
         
         update CompleteTaxReturnStatement set NumberOfDependents=@NumberOfDependents where TaxPayerID=@TaxPayerID;
-        update CompleteTaxReturnStatement set TotalIncome=@TaxableIncome where TaxPayerID=@TaxPayerID;
+        update CompleteTaxReturnStatement set TotalIncome=@TotalIncome where TaxPayerID=@TaxPayerID;
         update CompleteTaxReturnStatement set TaxesWitheld=@TaxesWitheld where TaxPayerID=@TaxPayerID;
         update CompleteTaxReturnStatement set RefundDue=@RefundDue where TaxPayerID=@TaxPayerID;
         update CompleteTaxReturnStatement set PaymentDue=@TaxesDue where TaxPayerID=@TaxPayerID;
@@ -309,32 +231,7 @@ return(TID);
 end //
 delimiter ;
 
-select @NumberOfDependents;
-update TaxReturnStatement set RefundDue=0 where TaxPayerID=201920392092039;
-set @test = generateTaxReturnStatement(201920392092039);
-select * from CompleteTaxReturnStatement;
-
-/* This table will be the one that we ultmiately query from the web interface to read out the values that we need as input for the pdf */
-create table CompleteTaxReturnStatement
-	(TaxPayerID			numeric(20,0) not null,
-	Name 				varchar(20),
-    DOB 				numeric(8,0),
-    SSN					numeric(9,0),
-    StreetAddress		varchar(30),
-    City 				varchar(20),
-    State				varchar(10),
-    NumberOfDependents	numeric(3,0),
-    TotalIncome			numeric(10,0),
-    MaxDeduction		numeric(10,0),
-    TaxableIncome		numeric(10,0),
-    TaxesWitheld		numeric(10,0),
-    PaymentDue			numeric(10,0),
-    RefundDue			numeric(10,2),
-    primary key(TaxPayerID));
-insert into CompleteTaxReturnStatement
-values( @TaxPayerID, @TaxPayerName, @DOB, @SSN, @Address, @City, @State, @NumberOfDependents, @TotalIncome, @MaxDeduction, @TaxableIncome, @TaxesWitheld, @TaxesDue, @RefundDue);
-
-/* a lot of the variables for that insert statement aren't initialized yet...let's do that here */
+/* This code is for testing the variables involved in calculating the values for the tax return statement */
 set @TaxPayerID = 201920392092039;
 set @TaxPayerName = (select Name from TaxPayers where TaxPayerID=@TaxPayerID);
 set @DOB = (select DOB from TaxPayers where TaxPayerID=@TaxPayerID);
@@ -344,5 +241,40 @@ set @City = (select City from TaxPayers where TaxPayerID=@TaxPayerID);
 set @State = (select State from TaxPayers where TaxPayerID=@TaxPayerID);
 set @NumberOfDependents = (select count(*) from HasDependent where TaxPayerID=@TaxPayerID);
 set @TotalIncome = (select sum(Amount) from GrossTaxableIncomes where TaxPayerID=@TaxPayerID);
-/* The remaining variables can be set by calling the generateTaxReturnStatement function */
-    select * from CompleteTaxReturnStatement;
+    
+/* The following function accepts an income amount as input and determines the amount of taxes that are owed on that amount of income, according to the gradient tax scale */    
+delimiter //
+create function calcTax(income numeric(10,2))
+    returns numeric(10,2) deterministic
+    begin
+        declare result numeric(10,2);
+        if income > 35000 then
+            set result = (income - 35000) * 0.3;
+            set result = result + 17000 * 0.25;
+            set result = result + 7000 * 0.2;
+            set result = result + 6000 * 0.15;
+            set result = result + 5000 * 0.1;
+        elseif income > 18000 then
+            set result = (income - 18000) * 0.25;
+            set result = result + 7000 * 0.2;
+            set result = result + 6000 * 0.15;
+            set result = result + 5000 * 0.1;
+        elseif income > 11000 then
+            set result = (income - 11000) * 0.2;
+            set result = result + 6000 * 0.15;
+            set result = result + 5000 * 0.1;
+        elseif income > 5000 then
+            set result = (income - 5000) * 0.15;
+            set result = result + 5000 * 0.1;
+        else
+            set result = income * 0.1;
+        end if;
+        return (result);
+    end //
+delimiter ;
+
+select @NumberOfDependents;
+update TaxReturnStatement set RefundDue=0 where TaxPayerID=201920392092039;
+set @test = generateTaxReturnStatement(201920392092039);
+select * from CompleteTaxReturnStatement;
+    
