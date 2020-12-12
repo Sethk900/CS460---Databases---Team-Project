@@ -22,10 +22,10 @@ $search_result = null;
 
 //========== Database Connection ==========
 
-$servername = "localhost";
-$username = "mytax2";
-$password = "&1E-epifQh,8";
-$dbname = "mytax2"; //information_schema vs semester_project
+$servername = ""; //Add your credentials here
+$username = "";
+$password = "";
+$dbname = "";
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
