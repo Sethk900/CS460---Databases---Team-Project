@@ -9,12 +9,7 @@
  - Make changes to the php file as needed to develop the interface. Test the interface in the web browser.  
 
 # Current To-Do List
-Refine MaxDeduction query (Seth)  
-Add an area to the interface for the user to submit queries directly to the DB (similar to the Input and Output boxes from Joel's sandbox)  
-Add an area to the interface for the employer to submit income info (we will need to authenticate the employer's identity somehow, maybe by checking their EmployerID?)  
-Improve upon the functionality of filling in the 1040 form pdf. 
-Make the web interface look better -- i.e. add a banner at the top of the page, some background images, and make the layout look more even and professional  
-Write insert statements to add sample data to the database  
+Nothing (project complete) 
 
 # Prospective Timeline:
 NLT 07 September:  
